@@ -1,6 +1,3 @@
-export ERB
-export RUBY
-export RAGEL
 
 REVISION = $(shell git show --pretty=format:'%T %ad' | head -n 1)
 export REVISION
@@ -44,7 +41,4 @@ man_MANS = \
 		doc/kumomergedb.1 \
 		doc/kumostat.1 \
 		doc/kumotop.1
-
-prep:
-	cd src && make prep
 

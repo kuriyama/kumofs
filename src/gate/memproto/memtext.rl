@@ -134,6 +134,7 @@
 	action cmd_delete  { ctx->command = MEMTEXT_CMD_DELETE;  }
 	action cmd_incr    { ctx->command = MEMTEXT_CMD_INCR;    }
 	action cmd_decr    { ctx->command = MEMTEXT_CMD_DECR;    }
+	action cmd_version { ctx->command = MEMTEXT_CMD_VERSION; }
 
 
 	action do_retrieval {
@@ -214,6 +215,16 @@
 		} else { goto convert_error; }
 	}
 
+	action do_other {
+		CALLBACK(cb, memtext_callback_other);
+		if(cb) {
+			memtext_request_other req;
+			if((*cb)(ctx->user, ctx->command, &req) < 0) {
+				goto convert_error;
+			}
+		} else { goto convert_error; }
+	}
+
 	key        = ([^\r \0\n]+)       >mark_key        %key;
 	#key       = ([\!-\~]+)          >mark_key        %key;
 	flags      = ('0' | [1-9][0-9]*) >mark_flags      %flags;
@@ -242,14 +253,16 @@
 					| ('decr') @cmd_decr
 					;
 
+	other_command = ('version') @cmd_version;
+
 	retrieval = retrieval_command ' ' key (' ' key >incr_key)*
-				' '?   # workaraound for libmemcached
+				' '*   # workaraound for libmemcached
 				'\r\n';
 
 	storage = storage_command ' ' key
 				' ' flags ' ' exptime ' ' bytes
 				(' ' noreply)?
-				' '?   # workaraound for apr_memcache
+				' '*   # workaraound for apr_memcache and memcached client for java
 				'\r\n'
 				@data_start
 				'\r\n'
@@ -259,6 +272,7 @@
 				' ' flags ' ' exptime ' ' bytes
 				' ' cas_unique
 				(' ' noreply)?
+				' '*   # workaraound for memcached client for java
 				'\r\n'
 				@data_start
 				'\r\n'
@@ -275,11 +289,16 @@
 				'\r\n'
 				;
 
+	other = other_command
+			'\r\n'
+			;
+
 	command = retrieval @do_retrieval
 			| storage   @do_storage
 			| cas       @do_cas
 			| delete    @do_delete
 			| numeric   @do_numeric
+			| other     @do_other
 			;
 
 main := (command >reset)+;

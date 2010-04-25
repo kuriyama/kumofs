@@ -1,4 +1,4 @@
-#line 1 "memproto/memtext.rl"
+#line 1 "src/gate/memproto/memtext.rl"
 /*
  * memtext
  *
@@ -54,12 +54,12 @@
 #define CALLBACK(NAME, TYPE) \
 	TYPE NAME = ((TYPE*)(&ctx->callback))[ctx->command]
 
-#line 288 "memproto/memtext.rl"
+#line 307 "src/gate/memproto/memtext.rl"
 
 
 
 
-#line 63 "memproto/memtext.c.tmp"
+#line 63 "src/gate/memproto/memtext.c"
 static const char _memtext_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	4, 1, 5, 1, 6, 1, 7, 1, 
@@ -68,76 +68,81 @@ static const char _memtext_actions[] = {
 	16, 1, 17, 1, 18, 1, 19, 1, 
 	20, 1, 21, 1, 22, 1, 23, 1, 
 	24, 1, 25, 1, 26, 1, 27, 1, 
-	28, 1, 29, 1, 30, 2, 3, 1
-	
+	28, 1, 29, 1, 30, 1, 31, 1, 
+	32, 2, 3, 1
 };
 
 static const unsigned char _memtext_key_offsets[] = {
-	0, 0, 8, 10, 11, 12, 16, 20, 
-	23, 24, 27, 28, 30, 34, 35, 36, 
-	37, 38, 39, 40, 44, 48, 51, 52, 
-	55, 56, 58, 61, 64, 66, 67, 68, 
-	69, 70, 71, 72, 73, 74, 75, 76, 
-	77, 81, 84, 87, 88, 90, 91, 92, 
-	96, 100, 103, 105, 106, 107, 108, 109, 
-	110, 111, 112, 113, 114, 118, 119, 120, 
-	121, 122, 126, 130, 131, 135, 137, 138, 
-	139, 140, 141, 142, 143, 144, 145, 149, 
-	150, 151, 153, 157, 161, 162, 166, 167, 
-	168, 169, 170, 171, 172, 173, 174, 175, 
-	176, 177, 178, 179, 180, 181, 182, 183, 
-	184, 186, 187, 188, 189, 190, 191, 192, 
-	194, 195, 198, 201, 202, 203, 204, 205, 
-	213
+	0, 0, 9, 11, 12, 13, 17, 21, 
+	24, 25, 28, 29, 31, 35, 36, 37, 
+	38, 39, 40, 41, 45, 49, 52, 53, 
+	56, 57, 59, 62, 65, 67, 68, 69, 
+	70, 73, 75, 76, 77, 78, 79, 80, 
+	81, 83, 87, 90, 93, 94, 96, 97, 
+	98, 102, 106, 109, 111, 112, 113, 114, 
+	115, 116, 117, 118, 119, 120, 124, 125, 
+	126, 127, 128, 132, 136, 137, 141, 143, 
+	144, 145, 146, 147, 148, 149, 150, 151, 
+	155, 156, 157, 159, 163, 167, 168, 172, 
+	174, 175, 176, 177, 178, 179, 180, 181, 
+	182, 183, 184, 185, 186, 187, 188, 189, 
+	190, 191, 192, 193, 194, 195, 196, 197, 
+	198, 199, 200, 203, 205, 206, 207, 208, 
+	209, 210, 211, 213, 216, 219, 220, 221, 
+	222, 223, 232
 };
 
 static const char _memtext_trans_keys[] = {
 	97, 99, 100, 103, 105, 112, 114, 115, 
-	100, 112, 100, 32, 0, 10, 13, 32, 
-	0, 10, 13, 32, 48, 49, 57, 32, 
-	48, 49, 57, 32, 49, 57, 13, 32, 
-	48, 57, 10, 13, 10, 97, 115, 32, 
+	118, 100, 112, 100, 32, 0, 10, 13, 
+	32, 0, 10, 13, 32, 48, 49, 57, 
+	32, 48, 49, 57, 32, 49, 57, 13, 
+	32, 48, 57, 10, 13, 10, 97, 115, 
+	32, 0, 10, 13, 32, 0, 10, 13, 
+	32, 48, 49, 57, 32, 48, 49, 57, 
+	32, 49, 57, 32, 48, 57, 48, 49, 
+	57, 13, 32, 10, 13, 10, 13, 32, 
+	110, 13, 32, 111, 114, 101, 112, 108, 
+	121, 13, 32, 13, 32, 48, 57, 32, 
+	48, 57, 32, 48, 57, 101, 99, 108, 
+	114, 32, 0, 10, 13, 32, 0, 10, 
+	13, 32, 48, 49, 57, 13, 32, 10, 
+	110, 111, 114, 101, 112, 108, 121, 13, 
+	13, 32, 48, 57, 101, 116, 101, 32, 
 	0, 10, 13, 32, 0, 10, 13, 32, 
-	48, 49, 57, 32, 48, 49, 57, 32, 
-	49, 57, 32, 48, 57, 48, 49, 57, 
-	13, 32, 10, 13, 10, 110, 111, 114, 
-	101, 112, 108, 121, 13, 13, 32, 48, 
-	57, 32, 48, 57, 32, 48, 57, 101, 
-	99, 108, 114, 32, 0, 10, 13, 32, 
-	0, 10, 13, 32, 48, 49, 57, 13, 
-	32, 10, 110, 111, 114, 101, 112, 108, 
-	121, 13, 13, 32, 48, 57, 101, 116, 
-	101, 32, 0, 10, 13, 32, 0, 10, 
-	13, 32, 10, 48, 110, 49, 57, 13, 
-	32, 110, 111, 114, 101, 112, 108, 121, 
-	13, 13, 32, 48, 57, 101, 116, 32, 
-	115, 0, 10, 13, 32, 0, 10, 13, 
-	32, 10, 0, 10, 13, 32, 32, 110, 
+	10, 48, 110, 49, 57, 13, 32, 110, 
+	111, 114, 101, 112, 108, 121, 13, 13, 
+	32, 48, 57, 101, 116, 32, 115, 0, 
+	10, 13, 32, 0, 10, 13, 32, 10, 
+	0, 10, 13, 32, 13, 32, 32, 110, 
 	99, 114, 114, 101, 112, 101, 110, 100, 
 	101, 112, 108, 97, 99, 101, 101, 116, 
-	13, 110, 111, 114, 101, 112, 108, 121, 
-	13, 32, 13, 32, 48, 57, 32, 48, 
-	57, 112, 101, 110, 100, 97, 99, 100, 
-	103, 105, 112, 114, 115, 0
+	101, 114, 115, 105, 111, 110, 13, 10, 
+	13, 32, 110, 13, 32, 111, 114, 101, 
+	112, 108, 121, 13, 32, 32, 48, 57, 
+	32, 48, 57, 112, 101, 110, 100, 97, 
+	99, 100, 103, 105, 112, 114, 115, 118, 
+	0
 };
 
 static const char _memtext_single_lengths[] = {
-	0, 8, 2, 1, 1, 4, 4, 1, 
+	0, 9, 2, 1, 1, 4, 4, 1, 
 	1, 1, 1, 0, 2, 1, 1, 1, 
 	1, 1, 1, 4, 4, 1, 1, 1, 
 	1, 0, 1, 1, 2, 1, 1, 1, 
+	3, 2, 1, 1, 1, 1, 1, 1, 
+	2, 2, 1, 1, 1, 2, 1, 1, 
+	4, 4, 1, 2, 1, 1, 1, 1, 
+	1, 1, 1, 1, 1, 2, 1, 1, 
+	1, 1, 4, 4, 1, 2, 2, 1, 
+	1, 1, 1, 1, 1, 1, 1, 2, 
+	1, 1, 2, 4, 4, 1, 4, 2, 
 	1, 1, 1, 1, 1, 1, 1, 1, 
-	2, 1, 1, 1, 2, 1, 1, 4, 
-	4, 1, 2, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 2, 1, 1, 1, 
-	1, 4, 4, 1, 2, 2, 1, 1, 
-	1, 1, 1, 1, 1, 1, 2, 1, 
-	1, 2, 4, 4, 1, 4, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 1, 
-	2, 1, 1, 1, 1, 1, 1, 2, 
-	1, 1, 1, 1, 1, 1, 1, 8, 
-	0
+	1, 1, 3, 2, 1, 1, 1, 1, 
+	1, 1, 2, 1, 1, 1, 1, 1, 
+	1, 9, 0
 };
 
 static const char _memtext_range_lengths[] = {
@@ -146,145 +151,155 @@ static const char _memtext_range_lengths[] = {
 	0, 0, 0, 0, 0, 1, 0, 1, 
 	0, 1, 1, 1, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	1, 1, 1, 0, 0, 0, 0, 0, 
-	0, 1, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 1, 0, 0, 0, 
-	0, 0, 0, 0, 1, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 1, 0, 
+	0, 1, 1, 1, 0, 0, 0, 0, 
+	0, 0, 1, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 1, 0, 0, 
+	0, 0, 0, 0, 0, 1, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 1, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 1, 1, 0, 0, 0, 0, 0, 
-	0
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 1, 1, 0, 0, 0, 
+	0, 0, 0
 };
 
 static const short _memtext_index_offsets[] = {
-	0, 0, 9, 12, 14, 16, 21, 26, 
-	29, 31, 34, 36, 38, 42, 44, 46, 
-	48, 50, 52, 54, 59, 64, 67, 69, 
-	72, 74, 76, 79, 82, 85, 87, 89, 
-	91, 93, 95, 97, 99, 101, 103, 105, 
-	107, 111, 114, 117, 119, 122, 124, 126, 
-	131, 136, 139, 142, 144, 146, 148, 150, 
-	152, 154, 156, 158, 160, 164, 166, 168, 
-	170, 172, 177, 182, 184, 188, 191, 193, 
-	195, 197, 199, 201, 203, 205, 207, 211, 
-	213, 215, 218, 223, 228, 230, 235, 237, 
-	239, 241, 243, 245, 247, 249, 251, 253, 
-	255, 257, 259, 261, 263, 265, 267, 269, 
-	271, 274, 276, 278, 280, 282, 284, 286, 
-	289, 291, 294, 297, 299, 301, 303, 305, 
-	314
+	0, 0, 10, 13, 15, 17, 22, 27, 
+	30, 32, 35, 37, 39, 43, 45, 47, 
+	49, 51, 53, 55, 60, 65, 68, 70, 
+	73, 75, 77, 80, 83, 86, 88, 90, 
+	92, 96, 99, 101, 103, 105, 107, 109, 
+	111, 114, 118, 121, 124, 126, 129, 131, 
+	133, 138, 143, 146, 149, 151, 153, 155, 
+	157, 159, 161, 163, 165, 167, 171, 173, 
+	175, 177, 179, 184, 189, 191, 195, 198, 
+	200, 202, 204, 206, 208, 210, 212, 214, 
+	218, 220, 222, 225, 230, 235, 237, 242, 
+	245, 247, 249, 251, 253, 255, 257, 259, 
+	261, 263, 265, 267, 269, 271, 273, 275, 
+	277, 279, 281, 283, 285, 287, 289, 291, 
+	293, 295, 297, 301, 304, 306, 308, 310, 
+	312, 314, 316, 319, 322, 325, 327, 329, 
+	331, 333, 343
 };
 
 static const unsigned char _memtext_indicies[] = {
 	0, 2, 3, 4, 5, 6, 7, 8, 
-	1, 9, 10, 1, 11, 1, 12, 1, 
-	1, 1, 1, 1, 13, 1, 1, 1, 
-	15, 14, 16, 17, 1, 18, 1, 19, 
-	20, 1, 21, 1, 22, 1, 23, 24, 
-	25, 1, 26, 1, 27, 1, 28, 1, 
-	29, 1, 30, 1, 31, 1, 1, 1, 
-	1, 1, 32, 1, 1, 1, 34, 33, 
-	35, 36, 1, 37, 1, 38, 39, 1, 
-	40, 1, 41, 1, 42, 43, 1, 44, 
-	45, 1, 46, 47, 1, 48, 1, 49, 
-	1, 50, 1, 51, 1, 52, 1, 53, 
-	1, 54, 1, 55, 1, 56, 1, 57, 
-	1, 58, 1, 46, 47, 59, 1, 40, 
-	60, 1, 37, 61, 1, 62, 1, 63, 
-	64, 1, 65, 1, 66, 1, 1, 1, 
-	1, 1, 67, 1, 1, 1, 69, 68, 
-	70, 71, 1, 72, 73, 1, 74, 1, 
-	75, 1, 76, 1, 77, 1, 78, 1, 
-	79, 1, 80, 1, 81, 1, 82, 1, 
-	72, 73, 83, 1, 84, 1, 85, 1, 
-	86, 1, 87, 1, 1, 1, 1, 1, 
-	88, 1, 1, 90, 91, 89, 92, 1, 
-	93, 95, 94, 1, 96, 97, 1, 95, 
-	1, 98, 1, 99, 1, 100, 1, 101, 
-	1, 102, 1, 103, 1, 104, 1, 96, 
-	97, 105, 1, 106, 1, 107, 1, 108, 
-	109, 1, 1, 1, 1, 1, 110, 1, 
-	1, 112, 113, 111, 114, 1, 1, 1, 
-	116, 1, 115, 108, 1, 117, 1, 118, 
-	1, 119, 1, 120, 1, 121, 1, 122, 
+	9, 1, 10, 11, 1, 12, 1, 13, 
+	1, 1, 1, 1, 1, 14, 1, 1, 
+	1, 16, 15, 17, 18, 1, 19, 1, 
+	20, 21, 1, 22, 1, 23, 1, 24, 
+	25, 26, 1, 27, 1, 28, 1, 29, 
+	1, 30, 1, 31, 1, 32, 1, 1, 
+	1, 1, 1, 33, 1, 1, 1, 35, 
+	34, 36, 37, 1, 38, 1, 39, 40, 
+	1, 41, 1, 42, 1, 43, 44, 1, 
+	45, 46, 1, 47, 48, 1, 49, 1, 
+	50, 1, 51, 1, 52, 53, 54, 1, 
+	52, 53, 1, 55, 1, 56, 1, 57, 
+	1, 58, 1, 59, 1, 60, 1, 61, 
+	62, 1, 47, 48, 63, 1, 41, 64, 
+	1, 38, 65, 1, 66, 1, 67, 68, 
+	1, 69, 1, 70, 1, 1, 1, 1, 
+	1, 71, 1, 1, 1, 73, 72, 74, 
+	75, 1, 76, 77, 1, 78, 1, 79, 
+	1, 80, 1, 81, 1, 82, 1, 83, 
+	1, 84, 1, 85, 1, 86, 1, 76, 
+	77, 87, 1, 88, 1, 89, 1, 90, 
+	1, 91, 1, 1, 1, 1, 1, 92, 
+	1, 1, 94, 95, 93, 96, 1, 97, 
+	99, 98, 1, 100, 101, 1, 99, 1, 
+	102, 1, 103, 1, 104, 1, 105, 1, 
+	106, 1, 107, 1, 108, 1, 100, 101, 
+	109, 1, 110, 1, 111, 1, 112, 113, 
+	1, 1, 1, 1, 1, 114, 1, 1, 
+	116, 117, 115, 118, 1, 1, 1, 120, 
+	121, 119, 120, 121, 1, 112, 1, 122, 
 	1, 123, 1, 124, 1, 125, 1, 126, 
 	1, 127, 1, 128, 1, 129, 1, 130, 
 	1, 131, 1, 132, 1, 133, 1, 134, 
-	135, 1, 136, 1, 137, 1, 138, 1, 
-	139, 1, 140, 1, 141, 1, 142, 143, 
-	1, 134, 1, 21, 144, 1, 18, 145, 
-	1, 146, 1, 147, 1, 148, 1, 149, 
-	1, 0, 2, 3, 4, 5, 6, 7, 
-	8, 1, 150, 0
+	1, 135, 1, 136, 1, 137, 1, 138, 
+	1, 139, 1, 140, 1, 141, 1, 142, 
+	1, 143, 1, 144, 1, 145, 1, 146, 
+	1, 147, 148, 149, 1, 147, 148, 1, 
+	150, 1, 151, 1, 152, 1, 153, 1, 
+	154, 1, 155, 1, 156, 157, 1, 22, 
+	158, 1, 19, 159, 1, 160, 1, 161, 
+	1, 162, 1, 163, 1, 0, 2, 3, 
+	4, 5, 6, 7, 8, 9, 1, 164, 
+	0
 };
 
-static const char _memtext_trans_targs[] = {
-	2, 0, 16, 43, 79, 87, 90, 96, 
-	102, 3, 115, 4, 5, 6, 6, 7, 
-	8, 114, 9, 10, 113, 11, 12, 13, 
-	104, 12, 14, 15, 119, 17, 18, 19, 
-	20, 20, 21, 22, 42, 23, 24, 41, 
-	25, 26, 27, 26, 28, 40, 29, 32, 
-	30, 31, 119, 33, 34, 35, 36, 37, 
-	38, 39, 29, 40, 41, 42, 44, 45, 
-	61, 46, 47, 48, 48, 49, 50, 60, 
-	51, 52, 119, 53, 54, 55, 56, 57, 
-	58, 59, 51, 60, 62, 63, 64, 65, 
-	66, 66, 67, 68, 119, 69, 78, 71, 
-	67, 70, 72, 73, 74, 75, 76, 77, 
-	67, 78, 80, 81, 82, 86, 83, 83, 
-	84, 85, 119, 83, 84, 88, 89, 46, 
-	91, 92, 93, 94, 95, 4, 97, 98, 
-	99, 100, 101, 4, 103, 4, 13, 105, 
-	106, 107, 108, 109, 110, 111, 13, 112, 
-	113, 114, 116, 117, 118, 4, 120
+static const unsigned char _memtext_trans_targs[] = {
+	2, 0, 16, 44, 80, 89, 92, 98, 
+	104, 106, 3, 125, 4, 5, 6, 6, 
+	7, 8, 124, 9, 10, 123, 11, 12, 
+	13, 114, 12, 14, 15, 129, 17, 18, 
+	19, 20, 20, 21, 22, 43, 23, 24, 
+	42, 25, 26, 27, 26, 28, 41, 29, 
+	32, 30, 31, 129, 29, 33, 34, 35, 
+	36, 37, 38, 39, 40, 29, 33, 41, 
+	42, 43, 45, 46, 62, 47, 48, 49, 
+	49, 50, 51, 61, 52, 53, 129, 54, 
+	55, 56, 57, 58, 59, 60, 52, 61, 
+	63, 64, 65, 66, 67, 67, 68, 69, 
+	129, 70, 79, 72, 68, 71, 73, 74, 
+	75, 76, 77, 78, 68, 79, 81, 82, 
+	83, 88, 84, 84, 85, 86, 129, 84, 
+	85, 87, 90, 91, 47, 93, 94, 95, 
+	96, 97, 4, 99, 100, 101, 102, 103, 
+	4, 105, 4, 107, 108, 109, 110, 111, 
+	112, 113, 129, 13, 115, 116, 117, 118, 
+	119, 120, 121, 122, 13, 115, 123, 124, 
+	126, 127, 128, 4, 130
 };
 
 static const char _memtext_trans_actions[] = {
 	1, 0, 1, 1, 1, 1, 1, 1, 
-	1, 0, 0, 35, 0, 3, 0, 5, 
-	7, 7, 9, 11, 11, 13, 15, 17, 
-	17, 0, 25, 0, 53, 0, 43, 0, 
-	3, 0, 5, 7, 7, 9, 11, 11, 
-	13, 15, 17, 0, 21, 21, 23, 23, 
-	25, 0, 55, 0, 0, 0, 0, 0, 
-	0, 0, 19, 0, 0, 0, 0, 0, 
-	0, 49, 0, 3, 0, 5, 21, 21, 
-	23, 23, 59, 0, 0, 0, 0, 0, 
-	0, 0, 19, 0, 0, 0, 45, 0, 
-	3, 0, 5, 5, 57, 11, 11, 0, 
-	13, 13, 0, 0, 0, 0, 0, 0, 
-	19, 0, 0, 29, 0, 31, 3, 0, 
-	5, 5, 51, 61, 0, 0, 0, 47, 
-	0, 0, 0, 0, 0, 41, 0, 0, 
-	0, 0, 0, 37, 0, 33, 0, 0, 
-	0, 0, 0, 0, 0, 0, 19, 19, 
-	0, 0, 0, 0, 0, 39, 27
+	1, 1, 0, 0, 35, 0, 3, 0, 
+	5, 7, 7, 9, 11, 11, 13, 15, 
+	17, 17, 0, 25, 0, 55, 0, 43, 
+	0, 3, 0, 5, 7, 7, 9, 11, 
+	11, 13, 15, 17, 0, 21, 21, 23, 
+	23, 25, 0, 57, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 19, 19, 0, 
+	0, 0, 0, 0, 0, 49, 0, 3, 
+	0, 5, 21, 21, 23, 23, 61, 0, 
+	0, 0, 0, 0, 0, 0, 19, 0, 
+	0, 0, 45, 0, 3, 0, 5, 5, 
+	59, 11, 11, 0, 13, 13, 0, 0, 
+	0, 0, 0, 0, 19, 0, 0, 29, 
+	0, 31, 3, 0, 5, 5, 53, 65, 
+	0, 0, 0, 0, 47, 0, 0, 0, 
+	0, 0, 41, 0, 0, 0, 0, 0, 
+	37, 0, 33, 0, 0, 0, 0, 0, 
+	51, 0, 63, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 19, 19, 0, 0, 
+	0, 0, 0, 39, 27
 };
 
 static const int memtext_start = 1;
-static const int memtext_first_final = 119;
+static const int memtext_first_final = 129;
 static const int memtext_error = 0;
 
 static const int memtext_en_main = 1;
-static const int memtext_en_data = 120;
+static const int memtext_en_data = 130;
 
-#line 292 "memproto/memtext.rl"
+#line 311 "src/gate/memproto/memtext.rl"
 
 void memtext_init(memtext_parser* ctx, memtext_callback* callback, void* user)
 {
 	int cs = 0;
 	int top = 0;
 	
-#line 283 "memproto/memtext.c.tmp"
+#line 298 "src/gate/memproto/memtext.c"
 	{
 	cs = memtext_start;
 	top = 0;
 	}
-#line 298 "memproto/memtext.rl"
+#line 317 "src/gate/memproto/memtext.rl"
 	memset(ctx, 0, sizeof(memtext_parser));
 	ctx->cs = cs;
 	ctx->callback = *callback;
@@ -314,7 +329,7 @@ int memtext_execute(memtext_parser* ctx, const char* data, size_t len, size_t* o
 	//printf("\n");
 
 	
-#line 318 "memproto/memtext.c.tmp"
+#line 333 "src/gate/memproto/memtext.c"
 	{
 	int _klen;
 	unsigned int _trans;
@@ -389,7 +404,7 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-#line 59 "memproto/memtext.rl"
+#line 59 "src/gate/memproto/memtext.rl"
 	{
 		ctx->keys = 0;
 		ctx->noreply = false;
@@ -397,19 +412,19 @@ _match:
 	}
 	break;
 	case 1:
-#line 65 "memproto/memtext.rl"
+#line 65 "src/gate/memproto/memtext.rl"
 	{
 		MARK(key_pos[ctx->keys], p);
 	}
 	break;
 	case 2:
-#line 68 "memproto/memtext.rl"
+#line 68 "src/gate/memproto/memtext.rl"
 	{
 		SET_MARK_LEN(key_len[ctx->keys], key_pos[ctx->keys], p);
 	}
 	break;
 	case 3:
-#line 71 "memproto/memtext.rl"
+#line 71 "src/gate/memproto/memtext.rl"
 	{
 		++ctx->keys;
 		if(ctx->keys > MEMTEXT_MAX_MULTI_GET) {
@@ -418,69 +433,69 @@ _match:
 	}
 	break;
 	case 4:
-#line 78 "memproto/memtext.rl"
+#line 78 "src/gate/memproto/memtext.rl"
 	{
 		MARK(flags, p);
 	}
 	break;
 	case 5:
-#line 81 "memproto/memtext.rl"
+#line 81 "src/gate/memproto/memtext.rl"
 	{
 		SET_UINT(flags, flags, p);
 	}
 	break;
 	case 6:
-#line 85 "memproto/memtext.rl"
+#line 85 "src/gate/memproto/memtext.rl"
 	{
 		MARK(exptime, p);
 	}
 	break;
 	case 7:
-#line 88 "memproto/memtext.rl"
+#line 88 "src/gate/memproto/memtext.rl"
 	{
 		SET_UINT(exptime, exptime, p);
 	}
 	break;
 	case 8:
-#line 92 "memproto/memtext.rl"
+#line 92 "src/gate/memproto/memtext.rl"
 	{
 		MARK(bytes, p);
 	}
 	break;
 	case 9:
-#line 95 "memproto/memtext.rl"
+#line 95 "src/gate/memproto/memtext.rl"
 	{
 		SET_UINT(bytes, bytes, p);
 	}
 	break;
 	case 10:
-#line 99 "memproto/memtext.rl"
+#line 99 "src/gate/memproto/memtext.rl"
 	{
 		ctx->noreply = true;
 	}
 	break;
 	case 11:
-#line 103 "memproto/memtext.rl"
+#line 103 "src/gate/memproto/memtext.rl"
 	{
 		MARK(cas_unique, p);
 	}
 	break;
 	case 12:
-#line 106 "memproto/memtext.rl"
+#line 106 "src/gate/memproto/memtext.rl"
 	{
 		SET_ULL(cas_unique, cas_unique, p);
 	}
 	break;
 	case 13:
-#line 110 "memproto/memtext.rl"
+#line 110 "src/gate/memproto/memtext.rl"
 	{
 		MARK(data_pos, p+1);
 		ctx->data_count = ctx->bytes;
-		{stack[top++] = cs; cs = 120; goto _again;}
+		{stack[top++] = cs; cs = 130; goto _again;}
 	}
 	break;
 	case 14:
-#line 115 "memproto/memtext.rl"
+#line 115 "src/gate/memproto/memtext.rl"
 	{
 		if(--ctx->data_count == 0) {
 			//printf("mark %d\n", ctx->data_pos);
@@ -492,51 +507,55 @@ _match:
 	}
 	break;
 	case 15:
-#line 126 "memproto/memtext.rl"
+#line 126 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_GET;     }
 	break;
 	case 16:
-#line 127 "memproto/memtext.rl"
+#line 127 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_GETS;    }
 	break;
 	case 17:
-#line 128 "memproto/memtext.rl"
+#line 128 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_SET;     }
 	break;
 	case 18:
-#line 129 "memproto/memtext.rl"
+#line 129 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_ADD;     }
 	break;
 	case 19:
-#line 130 "memproto/memtext.rl"
+#line 130 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_REPLACE; }
 	break;
 	case 20:
-#line 131 "memproto/memtext.rl"
+#line 131 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_APPEND;  }
 	break;
 	case 21:
-#line 132 "memproto/memtext.rl"
+#line 132 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_PREPEND; }
 	break;
 	case 22:
-#line 133 "memproto/memtext.rl"
+#line 133 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_CAS;     }
 	break;
 	case 23:
-#line 134 "memproto/memtext.rl"
+#line 134 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_DELETE;  }
 	break;
 	case 24:
-#line 135 "memproto/memtext.rl"
+#line 135 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_INCR;    }
 	break;
 	case 25:
-#line 136 "memproto/memtext.rl"
+#line 136 "src/gate/memproto/memtext.rl"
 	{ ctx->command = MEMTEXT_CMD_DECR;    }
 	break;
 	case 26:
-#line 139 "memproto/memtext.rl"
+#line 137 "src/gate/memproto/memtext.rl"
+	{ ctx->command = MEMTEXT_CMD_VERSION; }
+	break;
+	case 27:
+#line 140 "src/gate/memproto/memtext.rl"
 	{
 		unsigned int i;
 		++ctx->keys;
@@ -556,8 +575,8 @@ _match:
 		} else { goto convert_error; }
 	}
 	break;
-	case 27:
-#line 158 "memproto/memtext.rl"
+	case 28:
+#line 159 "src/gate/memproto/memtext.rl"
 	{
 		CALLBACK(cb, memtext_callback_storage);
 		if(cb) {
@@ -574,8 +593,8 @@ _match:
 		} else { goto convert_error; }
 	}
 	break;
-	case 28:
-#line 174 "memproto/memtext.rl"
+	case 29:
+#line 175 "src/gate/memproto/memtext.rl"
 	{
 		CALLBACK(cb, memtext_callback_cas);
 		if(cb) {
@@ -593,8 +612,8 @@ _match:
 		} else { goto convert_error; }
 	}
 	break;
-	case 29:
-#line 191 "memproto/memtext.rl"
+	case 30:
+#line 192 "src/gate/memproto/memtext.rl"
 	{
 		CALLBACK(cb, memtext_callback_delete);
 		if(cb) {
@@ -608,8 +627,8 @@ _match:
 		} else { goto convert_error; }
 	}
 	break;
-	case 30:
-#line 204 "memproto/memtext.rl"
+	case 31:
+#line 205 "src/gate/memproto/memtext.rl"
 	{
 		CALLBACK(cb, memtext_callback_numeric);
 		if(cb) {
@@ -623,7 +642,19 @@ _match:
 		} else { goto convert_error; }
 	}
 	break;
-#line 627 "memproto/memtext.c.tmp"
+	case 32:
+#line 218 "src/gate/memproto/memtext.rl"
+	{
+		CALLBACK(cb, memtext_callback_other);
+		if(cb) {
+			memtext_request_other req;
+			if((*cb)(ctx->user, ctx->command, &req) < 0) {
+				goto convert_error;
+			}
+		} else { goto convert_error; }
+	}
+	break;
+#line 658 "src/gate/memproto/memtext.c"
 		}
 	}
 
@@ -635,7 +666,7 @@ _again:
 	_test_eof: {}
 	_out: {}
 	}
-#line 327 "memproto/memtext.rl"
+#line 346 "src/gate/memproto/memtext.rl"
 
 ret:
 	ctx->cs = cs;

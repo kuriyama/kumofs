@@ -1,39 +1,16 @@
 AC_INIT(src/logic/boot.h)
 AC_CONFIG_AUX_DIR(ac)
-AM_INIT_AUTOMAKE(kumofs, 0.3.1)
+AC_CANONICAL_TARGET
+
+AM_INIT_AUTOMAKE(kumofs, 0.3.4)
 AC_CONFIG_HEADER(config.h)
 
 
 AC_SUBST(CFLAGS)
-if test "" = "$CFLAGS"; then
-	CFLAGS="-O4"
-fi
 CFLAGS="-O4 -Wall $CFLAGS"
 
-
 AC_SUBST(CXXFLAGS)
-if test "" = "$CXXFLAGS"; then
-	CXXFLAGS="-O4"
-fi
 CXXFLAGS="-O4 -Wall $CXXFLAGS"
-
-
-AC_CHECK_PROG(RUBY, ruby, ruby)
-if test "x$RUBY" = x; then
-	AC_MSG_ERROR([cannot find ruby. Ruby is needed to build.])
-fi
-
-AC_CHECK_PROG(ERB, erb, erb)
-if test "x$ERB" = x; then
-	AC_MSG_ERROR([cannot find erb. Ruby is needed to build.])
-fi
-
-AC_CHECK_PROG(RAGEL, ragel, ragel)
-if test "x$RAGEL" = x; then
-	#AC_MSG_ERROR([cannot find ragel. Ragel is needed to build.])
-	RAGEL=ragel
-fi
-
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -41,6 +18,42 @@ AC_PROG_CXX
 AC_PROG_LIBTOOL
 AM_PROG_AS
 AM_PROG_CC_C_O
+
+
+AC_CACHE_CHECK([for __sync_* atomic operations], kumofs_cv_atomic_ops, [
+	AC_TRY_LINK([
+		int atomic_sub(int i) { return __sync_sub_and_fetch(&i, 1); }
+		int atomic_add(int i) { return __sync_add_and_fetch(&i, 1); }
+		int atomic_cas(int i) { return __sync_bool_compare_and_swap(&i, 0, 1); }
+	], [], kumofs_cv_atomic_ops="yes")
+	])
+if test "$kumofs_cv_atomic_ops" != "yes"; then
+	AC_MSG_ERROR([__sync_* atomic operations are not supported.
+
+Note that gcc < 4.1 is not supported.
+
+If you are using gcc >= 4.1 and the default target CPU architecture is "i386", try to
+add CFLAGS="--march=i686" and CXXFLAGS="-march=i686" options to ./configure as follows:
+
+  $ ./configure CFLAGS="-march=i686" CXXFLAGS="-march=i686"
+])
+fi
+
+
+AC_LANG_PUSH(C++)
+AC_CACHE_CHECK([for inner class friend], kumofs_cv_inner_class_friend, [
+	AC_TRY_COMPILE([
+		class base {
+			class inner { int val; friend class base; };
+			class check { void test() { inner r; r.val = 0; } };
+		};
+	], [], kumofs_cv_inner_class_friend="yes")
+	])
+if test "$kumofs_cv_inner_class_friend" != "yes"; then
+	AC_MSG_ERROR([inner class friend is not supported.
+Note that g++ < 4.1 is not supported. Use g++ >= 4.1.])
+fi
+AC_LANG_POP
 
 
 AC_ARG_WITH([msgpack],
@@ -131,16 +144,32 @@ AC_CHECK_LIB(crypto,SHA1,,
 	AC_MSG_ERROR([Can't find openssl library]))
 
 AC_CHECK_LIB(msgpack,main,,
-	AC_MSG_ERROR([Can't find msgpack library]))
+	AC_MSG_ERROR([Can't find msgpack library.
+--with-msgpack=DIR option may be needed.]))
 
 AC_CHECK_LIB(msgpackc,main,,
-	AC_MSG_ERROR([Can't find msgpackc library]))
+	AC_MSG_ERROR([Can't find msgpackc library.
+--with-msgpack=DIR option may be needed.]))
 
 AC_CHECK_HEADERS(tchdb.h,,
-	AC_MSG_ERROR([Can't find tokyo cabinet header]))
+	AC_MSG_ERROR([Can't find Tokyo Cabinet header.
+--with-tokyocabinet=DIR option may be needed.]))
 AC_CHECK_LIB(tokyocabinet,tchdbget,,
-	AC_MSG_ERROR([Can't find tokyocabinet library]))
+	AC_MSG_ERROR([Can't find tokyocabinet library.
+--with-tokyocabinet=DIR option may be needed.]))
 
+case "$target_os" in
+solaris*)
+	AC_CHECK_LIB(socket,accept,,
+		AC_MSG_ERROR([Can't find libsocket.]))
+	AC_CHECK_LIB(nsl,inet_ntop,,
+		AC_MSG_ERROR([Can't find libnsl.]))
+	AC_CHECK_LIB(sendfile,sendfile,,
+		AC_MSG_ERROR([Can't find libsendfile.]))
+	CXXFLAGS="$CXXFLAGS -D_REENTRANT"
+	CFLAGS="$CFLAGS -D_REENTRANT"
+	;;
+esac
 
 AC_MSG_CHECKING([storage type])
 AC_MSG_RESULT($storage_type)

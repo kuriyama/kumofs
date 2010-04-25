@@ -32,6 +32,7 @@
 #include <memory>
 #include <stdexcept>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <sys/un.h>
 #include <netinet/in.h>
 
@@ -179,6 +180,7 @@ extern std::auto_ptr<parser> s_parser;
 
 namespace convert {
 
+#if 0
 // convert network interface name to IPv4 address
 int netif_addr4(sockaddr_in* dst,  const char* ifname, unsigned short port);
 
@@ -187,6 +189,7 @@ int netif_addr6(sockaddr_in6* dst, const char* ifname, unsigned short port);
 
 // convert network interface name to IPv4 address or IPv6 address
 int netif_addr(sockaddr_in6* dst,  const char* ifname, unsigned short port);
+#endif
 
 template <typename T>
 bool numeric(T* dst, const char* str)
