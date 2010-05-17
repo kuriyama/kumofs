@@ -1,5 +1,28 @@
 
-2010-04-30 version 0.3.3:
+2010-05-15 version 0.4.2:
+
+  * Fixed the problem that get_multi always returns a CAS of 0
+  * Supported 'replace' command with CAS value on memcached binary protocol
+
+2010-05-14 version 0.4.1:
+
+  * Fixed replication behavior on CAS
+  * Fixed error response message of CAS on memcached text protocol
+  * Support flags, expiration time and CAS on memcached binary protocol
+
+2010-05-14 version 0.4.0:
+
+  * CAS (Compare-and-Swap) support
+
+2010-05-13 version 0.3.7:
+
+  * create backup on background thread
+
+2010-05-10 version 0.3.6:
+
+  * fixed SEGV on memcached gateway.
+
+2010-04-30 version 0.3.5:
 
   * Memcached gateway saves expiration time if -E option is specified.
 

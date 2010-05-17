@@ -15,7 +15,7 @@ kumofsは、実用性を重視した分散データストアです。レプリ�
   - 2台から60台程度までスケールします（60台以上はまだ検証されていません）
   - 小さなデータを大量に保存するのに適しています
   - memcachedプロトコルをサポートしています
-    - サポートしているのはget, set, delete のみです
+    - サポートしているのは get, set, delete, gets, cas のみです
 	- flagsを保存するには、kumo-gatewayに-Fオプションが必要です
 	- expireを保存するには、kumo-gatewayに-Eオプションが必要です
 
@@ -24,7 +24,7 @@ kumofsは、実用性を重視した分散データストアです。レプリ�
 
 kumofsには *key* と *value* だけで表されるシンプルなデータを保存できます。keyとvalueは任意のバイト列です。
 
-kumofsは以下の3つの操作をサポートしています：
+kumofsは以下の4つの操作をサポートしています：
 
 **Set(key, value)**
 keyとvalueのペアを保存します。１つのkey-valueペアは合計３台のサーバーにコピーされます。
@@ -38,6 +38,10 @@ Set中にGetした場合に古いvalueが取得されるか新しいvalueが取�
 keyに対応するvalueを削除します。
 Delete操作は実際には「削除済みフラグをSetする」操作なので、Setと同じ挙動になります。削除済みフラグは一定の時間が経過すると本当に削除されます。
 
+**CAS(key, value, compare)**
+Compare-and-Swapを行います。
+このCAS操作の意味論は、"比較が失敗したら、スワップは常に失敗する" というものです。比較が成功したとき、スワップが成功するとは限りません。この制限は、サーバの数が増減したときに生じます。操作が失敗した場合は、CAS操作をリトライする必要があります。
+
 
 ## インストール
 
@@ -47,8 +51,8 @@ kumofsをコンパイルして実行するには、以下の環境が必要で�
   - g++ &gt;= 4.1
   - ruby &gt;= 1.8.6
   - [Tokyo Cabinet](http://1978th.net/tokyocabinet/) &gt;= 1.4.10
-  - [MessagePack for C++](http://msgpack.sourceforge.jp/c:install.ja) &gt;= 0.3.1
-  - [MessagePack for Ruby](http://msgpack.sourceforge.jp/ruby:install.ja) &gt;= 0.3.1
+  - [MessagePack for C++](http://msgpack.sourceforge.net/cpp:install) &gt;= 0.3.1
+  - [MessagePack for Ruby](http://msgpack.sourceforge.net/ruby:install) &gt;= 0.3.1
   - libcrypto (openssl)
   - zlib
 

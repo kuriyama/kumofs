@@ -171,6 +171,8 @@ static const char* const GET_FAILED_REPLY    = "SERVER_ERROR get failed\r\n";
 static const char* const STORE_FAILED_REPLY  = "SERVER_ERROR store failed\r\n";
 static const char* const DELETE_FAILED_REPLY = "SERVER_ERROR delete failed\r\n";
 static const char* const VERSION_REPLY       = "VERSION " PACKAGE "-" VERSION "\r\n";
+static const char* const EXISTS_REPLY        = "EXISTS\r\n";
+static const char* const NOT_FOUND_REPLY     = "NOT_FOUND\r\n";
 
 // "VALUE "+keylen+" "+uint16+" "+uint32+" "+uint64+"\r\n\0"
 #define HEADER_SIZE(keylen) \
@@ -238,7 +240,7 @@ void response_get(void* user,
 	}
 
 	if(e->require_cas) {
-		p += sprintf(p, " %"PRIu64"\r\n", (uint64_t)0);
+		p += sprintf(p, " %"PRIu64"\r\n", res.clocktime);
 	} else {
 		p[0] = '\r'; p[1] = '\n'; p += 2;
 	}
@@ -308,7 +310,7 @@ void response_get_multi(void* user,
 		}
 	
 		if(e->require_cas) {
-			p += sprintf(p, " %"PRIu64"\r\n", (uint64_t)0);  // FIXME p64X casval
+			p += sprintf(p, " %"PRIu64"\r\n", res.clocktime);
 		} else {
 			p[0] = '\r'; p[1] = '\n'; p += 2;
 		}
@@ -352,6 +354,26 @@ void response_set(void* user,
 	send_data(e, "STORED\r\n", 8);
 }
 
+void response_cas(void* user,
+		gate::res_set& res, auto_zone z)
+{
+	set_entry* e = reinterpret_cast<set_entry*>(user);
+	LOG_TRACE("cas response");
+
+	if(res.error) {
+		send_data(e, STORE_FAILED_REPLY, strlen(STORE_FAILED_REPLY));
+		return;
+	}
+
+	if(!res.cas_success) {
+		// FIXME EXISTS, NOT_FOUND
+		send_data(e, EXISTS_REPLY, strlen(EXISTS_REPLY));
+		return;
+	}
+
+	send_data(e, "STORED\r\n", 8);
+}
+
 void response_delete(void* user,
 		gate::res_delete& res, auto_zone z)
 {
@@ -371,6 +393,10 @@ void response_delete(void* user,
 }
 
 void response_noreply_set(void* user,
+		gate::res_set& res, auto_zone z)
+{ }
+
+void response_noreply_cas(void* user,
 		gate::res_set& res, auto_zone z)
 { }
 
@@ -490,11 +516,11 @@ int request_gets(void* user,
 }
 
 
-int request_set(void* user,
+int request_set_impl(void* user,
 		memtext_command cmd,
-		memtext_request_storage* r)
+		memtext_request_storage* r,
+		uint64_t cas_unique)
 {
-	LOG_TRACE("set");
 	RELEASE_REFERENCE(user, ctx, life);
 
 	if((!g_save_flag && r->flags) || (!g_save_exptime && r->exptime)) {
@@ -502,28 +528,30 @@ int request_set(void* user,
 		return 0;
 	}
 
-	if(g_save_flag) {
-		union {
-			uint16_t num;
-			char mem[2];
-		} cast;
-		cast.num = htons(r->flags);
-		r->data     -= 2;
-		r->data_len += 2;
-		// テキストプロトコルでdataの前2バイトには\nとbytesが入っているが、
-		// r->data_lenにコピーされている
-		memcpy(const_cast<char*>(r->data), cast.mem, 2);
-	}
+	if(cmd == MEMTEXT_CMD_SET || cmd == MEMTEXT_CMD_CAS) {
+		if(g_save_flag) {
+			union {
+				uint16_t num;
+				char mem[2];
+			} cast;
+			cast.num = htons(r->flags);
+			r->data     -= 2;
+			r->data_len += 2;
+			// テキストプロトコルでdataの前2バイトには\nとbytesが入っているが、
+			// r->data_lenにコピーされている
+			memcpy(const_cast<char*>(r->data), cast.mem, 2);
+		}
 
-	if(g_save_exptime) {
-		union {
-			uint32_t num;
-			char mem[4];
-		} cast;
-		cast.num = htonl( exptime_to_system(r->exptime) );
-		r->data     -= 4;
-		r->data_len += 4;
-		memcpy(const_cast<char*>(r->data), cast.mem, 4);
+		if(g_save_exptime) {
+			union {
+				uint32_t num;
+				char mem[4];
+			} cast;
+			cast.num = htonl( exptime_to_system(r->exptime) );
+			r->data     -= 4;
+			r->data_len += 4;
+			memcpy(const_cast<char*>(r->data), cast.mem, 4);
+		}
 	}
 
 	set_entry* e = life->allocate<set_entry>();
@@ -537,16 +565,55 @@ int request_set(void* user,
 	req.val      = r->data;
 	req.hash     = gate::stdhash(req.key, req.keylen);
 	req.user     = reinterpret_cast<void*>(e);
+	req.life     = life;
 	if(r->noreply) {
-		req.async    = true;
 		req.callback = &response_noreply_set;
 	} else {
 		req.callback = &response_set;
 	}
-	req.life     = life;
+
+	switch(cmd) {
+	case MEMTEXT_CMD_SET:
+		if(r->noreply) {
+			req.operation = gate::OP_SET_ASYNC;
+		} else {
+			req.operation = gate::OP_SET;
+		}
+		break;
+	case MEMTEXT_CMD_CAS:
+		req.callback = &response_cas;
+		req.operation = gate::OP_CAS;
+		req.clocktime = cas_unique;
+		break;
+	case MEMTEXT_CMD_APPEND:
+		req.operation = gate::OP_APPEND;
+		break;
+	case MEMTEXT_CMD_PREPEND:
+		req.operation = gate::OP_PREPEND;
+		break;
+	default:
+		throw std::logic_error("unknown command");
+	}
 
 	req.submit();
 	return 0;
+}
+
+int request_set(void* user,
+		memtext_command cmd,
+		memtext_request_storage* r)
+{
+	LOG_TRACE("set/append/prepend");
+	return request_set_impl(user, cmd, r, 0);
+}
+
+int request_cas(void* user,
+		memtext_command cmd,
+		memtext_request_cas* r)
+{
+	LOG_TRACE("cas");
+	return request_set_impl(user, cmd,
+			(memtext_request_storage*)r, r->cas_unique);
 }
 
 int request_delete(void* user,
@@ -624,9 +691,9 @@ handler::handler(int fd) :
 		request_set,    // set
 		NULL,           // add
 		NULL,           // replace
-		NULL,           // append
-		NULL,           // prepend
-		NULL,           // cas
+		NULL, //request_set,    // append
+		NULL, //request_set,    // prepend
+		request_cas,    // cas
 		request_delete, // delete
 		NULL,           // incr
 		NULL,           // decr

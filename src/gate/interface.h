@@ -73,6 +73,15 @@ struct req_get {
 };
 
 
+enum set_op_t {
+	OP_SET       = 0,
+	OP_SET_ASYNC = 1,
+	OP_CAS       = 2,
+	OP_APPEND    = 3,
+	OP_PREPEND   = 4,
+};
+
+
 struct res_set {
 	int error;
 
@@ -83,12 +92,14 @@ struct res_set {
 	const char* val;
 	uint32_t vallen;
 	uint64_t clocktime;
+
+	bool cas_success;
 };
 
 typedef void (*callback_set)(void* user, res_set& res, auto_zone z);
 
 struct req_set {
-	req_set() : async(false) { }
+	req_set() : operation(OP_SET) { }
 
 	const char* key;
 	uint32_t keylen;
@@ -97,7 +108,8 @@ struct req_set {
 	const char* val;
 	uint32_t vallen;
 
-	bool async;
+	set_op_t operation;
+	uint64_t clocktime;
 
 	shared_zone life;
 	callback_set callback;

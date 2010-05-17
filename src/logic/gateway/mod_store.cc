@@ -160,15 +160,33 @@ try {
 	shared_zone life(req.life);
 	if(!life) { life.reset(new msgpack::zone()); }
 
+	server::set_op_t op;
+	uint64_t clocktime = 0;
+	switch(req.operation) {
+	case gate::OP_SET:
+		op = server::OP_SET;
+		break;
+	case gate::OP_SET_ASYNC:
+		op = server::OP_SET_ASYNC;
+		break;
+	case gate::OP_CAS:
+		op = server::OP_CAS;
+		clocktime = req.clocktime;
+		break;
+	case gate::OP_APPEND:
+		op = server::OP_APPEND;
+		break;
+	case gate::OP_PREPEND:
+		op = server::OP_PREPEND;
+		break;
+	}
+
 	uint16_t meta = 0;
 	rpc::retry<server::mod_store_t::Set>* retry =
 		life->allocate< rpc::retry<server::mod_store_t::Set> >(
-				server::mod_store_t::Set(
-					(share->cfg_async_replicate_set() || req.async) ?
-					  static_cast<server::store_flags>(server::store_flags_async()) :
-					  static_cast<server::store_flags>(server::store_flags_none()),
+				server::mod_store_t::Set(op,
 					msgtype::DBKey(req.key, req.keylen, req.hash),
-					msgtype::DBValue(req.val, req.vallen, meta))
+					msgtype::DBValue(req.val, req.vallen, meta, clocktime))
 				);
 
 	retry->set_callback(
@@ -394,7 +412,6 @@ try {
 	LOG_TRACE("ResSet ",err);
 
 	if(!res.is_nil()) {
-		ClockTime st = res.as<ClockTime>();
 		gate::res_set ret;
 		ret.error     = 0;
 		ret.key       = key.data();
@@ -402,7 +419,13 @@ try {
 		ret.hash      = key.hash();
 		ret.val       = val.data();
 		ret.vallen    = val.size();
-		ret.clocktime = st.get();
+		if(res.type == msgpack::type::BOOLEAN && res.via.boolean == false) {
+			ret.cas_success = false;
+			ret.clocktime = 0;
+		} else {
+			ret.cas_success = true;
+			ret.clocktime = res.as<ClockTime>().get();
+		}
 		//net->mod_cache.update(key, val);  // FIXME raw_data() is invalid
 		try { (*callback)(user, ret, z); } catch (...) { }
 

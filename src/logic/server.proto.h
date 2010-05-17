@@ -69,11 +69,19 @@ private:
 
 
 @code mod_store_t
+typedef uint32_t set_op_t;
+static const set_op_t OP_SET       = 0x00;
+static const set_op_t OP_SET_ASYNC = 0x01;
+static const set_op_t OP_CAS       = 0x02;
+static const set_op_t OP_APPEND    = 0x04;
+static const set_op_t OP_PREPEND   = 0x08;
+
 struct store_flags;
 typedef msgtype::flags<store_flags, 0>    store_flags_none;
 typedef msgtype::flags<store_flags, 0x01> store_flags_async;
 struct store_flags : public msgtype::flags_base {
-	bool is_async() { return is_set<store_flags_async>(); }
+	bool is_async() const { return is_set<store_flags_async>(); }
+	void set_async() { m |= store_flags_async::flag; }
 };
 
 struct replicate_flags;
@@ -101,11 +109,12 @@ struct replicate_flags : msgtype::flags_base {
 	};
 
 	message Set {
-		store_flags flags;
+		set_op_t operation;
 		msgtype::DBKey dbkey;
 		msgtype::DBValue dbval;
 		// success: clocktime:ClockTime
 		// failed:  nil
+		// cas is tried and failed: false
 	};
 
 	message Delete {
@@ -319,6 +328,11 @@ enum config_type {
 		uint32_t command;
 		msgpack::object arg;
 	};
+
+private:
+	void create_backup(shared_zone life,
+			std::string suffix,
+			rpc::weak_responder response);
 @end
 
 

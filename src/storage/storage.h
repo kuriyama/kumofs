@@ -126,6 +126,11 @@ public:
 			const char* raw_key, uint32_t raw_keylen,
 			const char* raw_val, uint32_t raw_vallen);
 
+	bool cas(
+			const char* raw_key, uint32_t raw_keylen,
+			const char* raw_val, uint32_t raw_vallen,
+			ClockTime compare);
+
 	bool update(
 			const char* raw_key, uint32_t raw_keylen,
 			const char* raw_val, uint32_t raw_vallen);
@@ -133,6 +138,12 @@ public:
 	bool remove(
 			const char* raw_key, uint32_t raw_keylen,
 			ClockTime update_clocktime);
+
+	// FIXME
+	//bool append(
+	//		const char* raw_key, uint32_t raw_keylen,
+	//		const char* val, uint32_t vallen,
+	//		ClockTime ct, bool prepend = false);
 
 	// FIXME
 	//void updatev()

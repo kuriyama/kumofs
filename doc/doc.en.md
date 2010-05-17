@@ -14,12 +14,15 @@ kumofs is a scalable and highly available distributed key-value store.
   - The system does not stop to recover crashed servers.
   - Scalable from 2 to 60 servers. (more than 60 servers has not be tested yet)
   - Optimized for storing a large amount of small data.
-  - memcached protocol support. (get, set and delete only; expiration time must be 0)
+  - memcached protocol support.
+    - supported commands are get (+get_multi), set, delete, gets and cas.
+	- specify -F option to the kumo-gateway to save flags.
+	- specify -E option to the kumo-gateway to save expiration time.
 
 
 ## Data Model
 
-kumofs supports following 3 operations:
+kumofs supports following 4 operations:
 
 **Set(key, value)**
 Store the key-value pair. One key-value pair is copied on three servers.
@@ -31,6 +34,10 @@ Retrieve the associated value of the key.
 **Delete(key)**
 Delete the key and its associated value.
 
+**CAS(key, value, compare)**
+Compare-and-Swap the key and its associated value.
+The semantics of the CAS operation is that "the swapping always fails if the comparison fails". This means that the swapping may not succeed if the comparison succeeds. This restriction is caused when some servers are detached or attached. You are required to retry the operation if the swapping is failed.
+
 
 ## Installation
 
@@ -40,8 +47,8 @@ Following environment is required to build kumofs:
   - g++ &gt;= 4.1
   - ruby &gt;= 1.8.6
   - [Tokyo Cabinet](http://1978th.net/tokyocabinet/) &gt;= 1.4.10
-  - [MessagePack for C++](http://msgpack.sourceforge.jp/c:install) &gt;= 0.3.1
-  - [MessagePack for Ruby](http://msgpack.sourceforge.jp/ruby:install) &gt;= 0.3.1
+  - [MessagePack for C++](http://msgpack.sourceforge.net/cpp:install) &gt;= 0.3.1
+  - [MessagePack for Ruby](http://msgpack.sourceforge.net/ruby:install) &gt;= 0.3.1
   - libcrypto (openssl)
   - zlib
 
@@ -277,4 +284,10 @@ Example:
 
     [on svr1]$ tchmgr create /var/kumodb.tch 1310710
     [on svr1]$ kumo-server -v -l svr1 -m mgr1 -p mgr2 -s /var/kumodb.tch
+
+
+## FAQ
+
+### What does 'kumofs' mean?
+*kumo* means *cloud* in Japanese. Cloud won't fall down ;-) *fs* means Fast Storage.
 
